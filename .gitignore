@@ -1,0 +1,9 @@
+venv
+.env
+phi3_base_model
+qwen_adaptive_tutor
+qwen_base_model
+unsloth_compiled_cache
+data
+.gradio
+outputs
