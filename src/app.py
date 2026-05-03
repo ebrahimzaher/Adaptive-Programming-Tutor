@@ -41,7 +41,7 @@ if __name__ == "__main__":
         model = model,
         train_dataset = split_dataset["train"],
         eval_dataset = split_dataset["test"],
-        data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False),
+        data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False), # ده بيظبط الأرقام بس
         args = TrainingArguments(
             per_device_train_batch_size = 1, 
             gradient_accumulation_steps = 8, 
