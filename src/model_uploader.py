@@ -4,10 +4,8 @@ from dotenv import load_dotenv
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 
-# قراءة المتغيرات من ملف .env
 load_dotenv()
 
-# هنسحب التوكن (لو الموديل بتاعك Public مش هتحتاجه إجباري في التحميل، بس يفضل يكون موجود)
 hf_token = os.getenv("HUGGINGFACE_API_KEY")
 
 def load_tutor_model():
@@ -20,13 +18,11 @@ def load_tutor_model():
     adapter_repo = "ebrahimzaher/qwen_adaptive_tutor"
 
     try:
-        # 1. تحميل الـ Tokenizer
         tokenizer = AutoTokenizer.from_pretrained(
             base_model_name,
             token=hf_token
         )
 
-        # 2. تحميل الموديل الأساسي (بنستخدم float16 و device_map عشان نوفر في الرامات ونستخدم كارت الشاشة لو متاح)
         base_model = AutoModelForCausalLM.from_pretrained(
             base_model_name,
             torch_dtype=torch.float16,
@@ -35,7 +31,6 @@ def load_tutor_model():
         )
 
         print("🔌 Applying LoRA adapter from Hugging Face...")
-        # 3. دمج الـ LoRA Adapter مع الموديل الأساسي
         model = PeftModel.from_pretrained(
             base_model, 
             adapter_repo, 
@@ -49,7 +44,6 @@ def load_tutor_model():
         print(f"❌ Error loading model: {e}")
         return None, None
 
-# لو حبيت تعمل Test سريع للملف ده لوحده
 if __name__ == "__main__":
     tokenizer, model = load_tutor_model()
     if model:

@@ -14,7 +14,6 @@ if __name__ == "__main__":
     
     split_dataset = dataset.train_test_split(test_size=0.1, seed=3407)
 
-
     print("Loading Qwen 1.5B Model from local folder...")
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name = "./qwen_base_model", 
@@ -41,7 +40,6 @@ if __name__ == "__main__":
 
     train_dataset = split_dataset["train"].map(tokenize_func, remove_columns=dataset.column_names)
     eval_dataset = split_dataset["test"].map(tokenize_func, remove_columns=dataset.column_names)
-
 
     trainer = Trainer(
         model = model,
@@ -73,7 +71,6 @@ if __name__ == "__main__":
     model.save_pretrained("qwen_adaptive_tutor")
     tokenizer.save_pretrained("qwen_adaptive_tutor")
     print("🎉 Training Complete! Your model is saved in the 'qwen_adaptive_tutor' folder.")
-
 
     print("\n" + "="*50)
     print("📊 Starting ROUGE Evaluation on Test Set...")

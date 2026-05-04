@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 
-# 1. إعدادات البيئة والموديل
 load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
 
@@ -38,7 +37,6 @@ def generate_synthetic_dataset_robust(input_csv_path, output_csv_path):
     df = pd.read_csv(input_csv_path)
     total_rows = len(df)
     
-    # 2. التحقق من التقدم السابق (الاستكمال)
     start_index = 0
     if os.path.exists(output_csv_path):
         existing_df = pd.read_csv(output_csv_path)
@@ -47,14 +45,12 @@ def generate_synthetic_dataset_robust(input_csv_path, output_csv_path):
         print(f"Resuming from index {start_index}...")
     else:
         print("No existing output file found. Starting from scratch...")
-        # إنشاء ملف فارغ بالرؤوس (Headers)
         pd.DataFrame(columns=["instruction", "output"]).to_csv(output_csv_path, index=False)
 
     if start_index >= total_rows:
         print("🎉 Dataset generation is already 100% complete!")
         return
 
-    # 3. توليد البيانات وحفظها صف بصف
     for index in range(start_index, total_rows):
         row = df.iloc[index]
         buggy_code = row['buggy_code']
@@ -72,12 +68,10 @@ def generate_synthetic_dataset_robust(input_csv_path, output_csv_path):
                 "output": hint
             }])
             
-            # حفظ فوري: إضافة الصف الجديد للملف بدون مسح القديم
             new_data.to_csv(output_csv_path, mode='a', header=False, index=False, encoding='utf-8')
             
             print(f"[{index + 1}/{total_rows}] Hint saved successfully.")
             
-            # وقت انتظار طبيعي
             time.sleep(3) 
             
         except Exception as e:
@@ -87,13 +81,10 @@ def generate_synthetic_dataset_robust(input_csv_path, output_csv_path):
             if "429" in error_message or "rate limit" in error_message.lower():
                 print("🛑 Hit Rate Limit/Daily Limit! Stopping the script cleanly.")
                 print("Please try again tomorrow or use a new API Key.")
-                break # إنهاء السكريبت تماماً لأن الكوتة اليومية خلصت
+                break
             else:
                 time.sleep(5)
 
-# ==========================================
-# تشغيل السكريبت
-# ==========================================
 if __name__ == "__main__":
     input_file_name = 'data/unlabeled_data.csv' 
     output_file_name = 'data/labeled_data.csv'
