@@ -9,7 +9,8 @@ from tqdm import tqdm
 if __name__ == "__main__":
 
     print("Loading Dataset...")
-    df = pd.read_csv("data/labeled_data.csv")
+    df = pd.read_csv("data/labeled_data.csv").dropna()
+    df = df.drop_duplicates()
     dataset = Dataset.from_pandas(df)
     
     split_dataset = dataset.train_test_split(test_size=0.1, seed=3407)
